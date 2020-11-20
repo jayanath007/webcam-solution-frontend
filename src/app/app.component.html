@@ -1,0 +1,4 @@
+<div>My user Name {{ communication.currentUser}}</div>
+<div *ngFor="let item of communication.liveUsersList$ | async">
+  <a> {{item.userName}}</a>
+</div>

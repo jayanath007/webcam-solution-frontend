@@ -1,3 +1,5 @@
+import { UserInfo } from './../models/peerData.interface';
+import { UserCommunicationService } from './../service/user-communication.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -11,10 +13,18 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'webcam-solution-frontend';
   public subscriptions = new Subscription();
 
+  constructor(public communication: UserCommunicationService) { }
 
   async ngOnInit() {
+    this.communication.newUserArrival();
+
+    // this.subscriptions.add(this.communication.liveUsers$.subscribe((user: UserInfo) => {
+    //   this.rtcService.newUser(user);
+    //   this.signalR.sayHello(this.currentUser, user.connectionId);
+    // }));
 
   }
+
 
 
   ngOnDestroy() {
