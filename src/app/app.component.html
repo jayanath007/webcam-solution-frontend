@@ -1,19 +1,38 @@
-<div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="center" >
+<div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="center">
 
   <div [ngStyle]="{'background-color':  communication.currentUser}" class="item item-5" fxFlex="400px">
-    <button  mat-raised-button color="warn" *ngIf="!communication.currentUser" (click)="goLive()">Go Live </button>
-    
+    <button mat-raised-button color="warn" *ngIf="!communication.currentUser" (click)="goLive()">Go Live </button>
+
     <div *ngIf="communication.currentUser">
-      <div >
+      <div>
         Live user Name {{ communication.currentUser}}
       </div>
     </div>
   </div>
   <div class="item item-4" fxFlex fxFlexOffset.xs="0">
-    online User list 
-    <div *ngFor="let item of communication.liveUsersList$ | async">
-      <div [ngStyle]="{'background-color':  item.userName}"> {{item.userName}}</div>
+    <div>
+      online User list
+      <!-- <div *ngFor="let item of communication.liveUsersList$ | async">
+        <div [ngStyle]="{'background-color':  item.userName}">  {{item.userName}}</div>
+      </div> -->
+
+      <mat-nav-list>
+        <mat-list-item [ngStyle]="{'background-color':  item.userName}" *ngFor="let item of communication.liveUsersList$ | async">
+           <a matLine href="..."> user :- {{item.userName}}}</a>
+           <button mat-raised-button color="warn" (click)="shareWebcam(item)">
+            share webcam
+           </button>
+        </mat-list-item>
+      </mat-nav-list>
+
+
     </div>
+
+    <div *ngIf="videoConnectionId" >
+      <h5 >{{videoConnectionId}}</h5>
+      <video #videoPlayer width="320" height="240" controls></video>
+    </div>
+
   </div>
 </div>
 

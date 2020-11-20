@@ -29,6 +29,11 @@ export class SignalrService {
 
   }
 
+
+
+
+  
+
   public async newUserConnection(user: string): Promise<void> {
     this.hubConnection.invoke('NewUser', user);
   }
