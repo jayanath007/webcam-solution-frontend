@@ -1,15 +1,16 @@
 <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="center" >
 
-  <div class="item item-5" fxFlex="400px">
+  <div [ngStyle]="{'background-color':  communication.currentUser}" class="item item-5" fxFlex="400px">
     <button  mat-raised-button color="warn" *ngIf="!communication.currentUser" (click)="goLive()">Go Live </button>
     
     <div *ngIf="communication.currentUser">
-      <div [ngStyle]="{'background-color':  communication.currentUser}">
+      <div >
         Live user Name {{ communication.currentUser}}
       </div>
     </div>
   </div>
   <div class="item item-4" fxFlex fxFlexOffset.xs="0">
+    online User list 
     <div *ngFor="let item of communication.liveUsersList$ | async">
       <div [ngStyle]="{'background-color':  item.userName}"> {{item.userName}}</div>
     </div>
