@@ -16,15 +16,12 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(public communication: UserCommunicationService) { }
 
   async ngOnInit() {
-    this.communication.newUserArrival();
-
-    // this.subscriptions.add(this.communication.liveUsers$.subscribe((user: UserInfo) => {
-    //   this.rtcService.newUser(user);
-    //   this.signalR.sayHello(this.currentUser, user.connectionId);
-    // }));
-
+    await this.communication.openCommunicationChanel();
   }
 
+  goLive() {
+    this.communication.goLive();
+  }
 
 
   ngOnDestroy() {

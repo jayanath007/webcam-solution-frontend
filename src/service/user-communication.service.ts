@@ -38,15 +38,16 @@ export class UserCommunicationService {
 
   }
 
-
-
-  public async newUserArrival() {
+  public async openCommunicationChanel() {
 
     this.hubConnection = await this.startConnection();
-    this.currentUser = this.util.getRandomColor();
-
-    await this.signalR.newUserConnection(this.currentUser);
     this.lessenUserEvents();
+  }
+
+  public async goLive() {
+
+    this.currentUser = this.util.getRandomColor();
+    await this.signalR.newUserConnection(this.currentUser);
   }
 
 

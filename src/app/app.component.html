@@ -1,4 +1,14 @@
-<div>My user Name {{ communication.currentUser}}</div>
-<div *ngFor="let item of communication.liveUsersList$ | async">
-  <a> {{item.userName}}</a>
-</div>
+<button *ngIf="!communication.currentUser" (click)="goLive()">Go Live </button>
+<div>
+
+
+  <div *ngIf="communication.currentUser">
+    <div [ngStyle]="{'background-color':  communication.currentUser}">
+      Live user Name {{ communication.currentUser}}
+    </div>
+  </div>
+
+  <div *ngFor="let item of communication.liveUsersList$ | async">
+    <div [ngStyle]="{'background-color':  item.userName}"> {{item.userName}}</div>
+  </div>
+  <!--  -->
