@@ -78,7 +78,6 @@ export class UserCommunicationService {
     const peer = new SimplePeer({ initiator: false, stream, trickle: false });
 
     peer.on('signal', signal => {
-
       const calleeSignal = JSON.stringify(signal);
       this.sendAcceptCall(incomingCall.callFrom, calleeSignal);
     });
