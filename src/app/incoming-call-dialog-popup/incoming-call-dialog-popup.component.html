@@ -1,11 +1,12 @@
-<h1 mat-dialog-title>Favorite Animal</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title> video Chat </h1>
 
+<!-- [ngStyle]="{'background-color':  data.callFrom}" -->
+<mat-dialog-content  class="mat-typography">
+   User Is calling
+</mat-dialog-content>
 
+<mat-dialog-actions >
 
-</div>
-
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close (click)="rejected()" >rejected</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="accepted()" > Accepted</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="accepted()"> Accepted</button>
+  <button mat-button mat-dialog-close (click)="rejected()">rejected</button>
 </mat-dialog-actions>

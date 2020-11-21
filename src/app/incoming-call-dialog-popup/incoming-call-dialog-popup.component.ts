@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { IncomingCallInfor } from 'src/models/interfaces';
 
 @Component({
   selector: 'app-incoming-call-dialog-popup',
@@ -8,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class IncomingCallDialogPopupComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { name: string, color: string },
+  constructor(@Inject(MAT_DIALOG_DATA) public data: IncomingCallInfor,
               public dialogRef: MatDialogRef<IncomingCallDialogPopupComponent>
   ) {
 

@@ -80,7 +80,7 @@ export class UserCommunicationService {
   public acceptCall(incomingCallData, stream) {
 
     const incomingCall = JSON.parse(incomingCallData);
-    this.setAccseptedCall();
+ 
     const peer = new SimplePeer({ initiator: false, stream, trickle: false });
 
     peer.on('signal', signal => {
@@ -110,7 +110,6 @@ export class UserCommunicationService {
     });
 
     this.hubConnection.on('CallAccepted', (signal) => {
-      this.setCallAccepted();
       peer.signal(signal);
     });
 
@@ -141,16 +140,9 @@ export class UserCommunicationService {
     this.hubConnection.invoke('CallAccepted', callFrom, signal);
     console.log(callFrom);
   }
-  setAccseptedCall() {
-    this.isAccseptedCall = true;
-  }
 
-  setCallAccepted() {
-    this.isCallAccepted = true;
-  }
 
-  setReceivingCall() {
-    this.isReceivingCall = true;
-  }
+
+
 
 }

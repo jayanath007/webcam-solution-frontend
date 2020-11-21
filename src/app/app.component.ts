@@ -25,8 +25,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild('remoteUserVideoPlayer', { static: false }) remoteUserVideoPlayer: ElementRef;
 
-
-
   constructor(public communication: UserCommunicationService, private util: UtilService, private dialog: MatDialog) {
 
 
@@ -36,19 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     await this.communication.openCommunicationChanel();
 
-    const incominCallMassagePopup$ = this.communication.incominCall$.pipe(switchMap((data) => {
+    const incominCallMassagePopup$ = this.communication.incominCall$.pipe(switchMap((incominCallInfor) => {
       return this.dialog.open(IncomingCallDialogPopupComponent).afterClosed()
-        .pipe(filter((isAccepted) => {
-
-          // tslint:disable-next-line: no-debugger
-          debugger;
-          return isAccepted;
-
-        }), map(() => {
-          return data;
+        .pipe(filter((isAccepted) => isAccepted), map(() => {
+          return incominCallInfor;
         }));
     }));
-
 
     this.subscriptions.add(incominCallMassagePopup$.subscribe(
       async (incomingCall) => {
