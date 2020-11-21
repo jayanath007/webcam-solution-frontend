@@ -1,5 +1,5 @@
 import { UtilService } from './../service/util.service';
-import { IncomingCallInfor, PeerData, SignalInfo, UserInfo } from './../models/peerData.interface';
+import { PeerData } from '../models/interfaces';
 import { UserCommunicationService } from './../service/user-communication.service';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';

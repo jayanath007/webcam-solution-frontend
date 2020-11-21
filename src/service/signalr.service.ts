@@ -1,4 +1,4 @@
-import { UserInfo } from './../models/peerData.interface';
+import { UserInfo } from '../models/interfaces';
 import { Injectable } from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import { Subject } from 'rxjs/internal/Subject';
@@ -33,11 +33,6 @@ export class SignalrService {
     this.hubConnection.invoke('NewUser', user);
   }
 
-
-
-  public sayHello(userName: string, user: string): void {
-    this.hubConnection.invoke('HelloUser', userName, user);
-  }
 
 
 
