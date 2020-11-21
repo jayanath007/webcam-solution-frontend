@@ -21,3 +21,11 @@ export interface ChatMessage {
   own: boolean;
   message: string;
 }
+
+export interface IncomingCallInfor {
+  callFrom: string;
+  userTocall: string;
+  signal: string;
+}
+
+

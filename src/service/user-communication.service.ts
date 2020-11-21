@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { scan } from 'rxjs/operators';
-import { PeerData, SignalInfo, UserAction, UserInfo } from './../models/peerData.interface';
+import { PeerData, SignalInfo, UserAction, UserInfo, IncomingCallInfor } from './../models/peerData.interface';
 import { Injectable } from '@angular/core';
 import { SignalrService } from './signalr.service';
 import { Observable } from 'rxjs/internal/Observable';
@@ -15,6 +15,7 @@ declare var SimplePeer: import('simple-peer').SimplePeer;
 export class UserCommunicationService {
 
   public currentUser: string;
+  public tempcurrentUser: string;
   public currentPeer: Instance;
   public liveUsersList$: Observable<Array<UserInfo>>;
 
@@ -29,6 +30,16 @@ export class UserCommunicationService {
   private signal = new Subject<SignalInfo>();
   public signal$ = this.signal.asObservable();
 
+  public isCallAccepted = false;
+  public isReceivingCall = false;
+  public isAccseptedCall = false;
+  public callerName = false;
+  public callerSignal;
+
+
+  private incominCall = new Subject<PeerData>();
+  public incominCall$ = this.incominCall.asObservable();
+
 
 
   constructor(private signalR: SignalrService) {
@@ -37,6 +48,7 @@ export class UserCommunicationService {
     this.liveUsersList$ = this.userAction$.pipe(scan<UserAction, Array<UserInfo>>((acc, user) => {
       const acclist = (acc) ? acc : [];
       if (user.action === 'add') {
+        this.tempcurrentUser = user.connectionId;
         return acclist.concat(user);
       } else if (user.action === 'delete') {
         return acclist.filter(x => x.connectionId !== user.connectionId);
@@ -52,18 +64,58 @@ export class UserCommunicationService {
     this.hubConnection = await this.startConnection();
     this.lessenUserEvents();
 
-    this.hubConnection.on('SendSignal', (user, signal) => {
-      this.signal.next({ user, signal });
+    this.hubConnection.on('SendSignal', (data) => {
+      this.incominCall.next(data);
     });
+
   }
 
-  public async goLive(username) {
 
+  public acceptCall(incomingCallData, stream) {
+
+    const incomingCall = JSON.parse(incomingCallData);
+    this.setAccseptedCall();
+    const peer = new SimplePeer({ initiator: false, stream, trickle: false });
+
+    peer.on('signal', signal => {
+
+      const calleeSignal = JSON.stringify(signal);
+      this.sendAcceptCall(incomingCall.callFrom, calleeSignal);
+    });
+    peer.on('stream', data => {
+      console.log('on stream', data);
+      this.onStream.next({ id: incomingCall.userTocall, data });
+    });
+    peer.signal(incomingCall.signal);
+  }
+
+  public callPeer(stream, userTocall: string, initiator: boolean) {
+
+    const peer = new SimplePeer({ initiator, stream, trickle: false });
+    console.log('step 1 send signal to callee');
+
+    peer.on('signal', callerSignal => {
+      const stringData = JSON.stringify(callerSignal);
+      this.sendSignalToUser(stringData, userTocall, this.tempcurrentUser);
+    });
+
+    peer.on('stream', data => {
+      console.log('on stream', data);
+      this.onStream.next({ id: userTocall, data });
+    });
+
+    this.hubConnection.on('CallAccepted', (signal) => {
+      this.setCallAccepted();
+      peer.signal(signal);
+    });
+
+  }
+
+
+  public async goLive(username) {
     this.currentUser = username;
     await this.signalR.newUserConnection(this.currentUser);
   }
-
-
 
   private async lessenUserEvents() {
 
@@ -87,39 +139,26 @@ export class UserCommunicationService {
     }
   }
 
-  public createPeer(stream, userId: string, initiator: boolean): Instance {
-    const peer = new SimplePeer({ initiator, stream });
 
-    peer.on('signal', data => {
-      const stringData = JSON.stringify(data);
-      this.sendSignalToUser(stringData, userId);
-    });
-
-    peer.on('stream', data => {
-      console.log('on stream', data);
-      this.onStream.next({ id: userId, data });
-    });
-
-    this.currentPeer = peer;
-    return peer;
+  public sendSignalToUser(signal: string, userTocall: string, callFrom: string) {
+    this.hubConnection.invoke('SendSignal', signal, userTocall, callFrom);
+    console.log(userTocall, callFrom);
   }
 
-  public signalPeer(userId: string, signal: string, stream: any) {
-    if (userId !== this.currentUser) {
-      const signalObject = JSON.parse(signal);
-      if (this.currentPeer) {
-        this.currentPeer.signal(signalObject);
-      } else {
-        const currentPeer = this.createPeer(stream, userId, false);
-        currentPeer.signal(signalObject);
-      }
-    }
+  public sendAcceptCall(callFrom: string, signal: string) {
+    this.hubConnection.invoke('CallAccepted', callFrom, signal);
+    console.log(callFrom);
   }
-  
-  public sendSignalToUser(signal: string, user: string) {
-    this.hubConnection.invoke('SendSignal', signal, user);
-    console.log(signal, user);
+  setAccseptedCall() {
+    this.isAccseptedCall = true;
   }
 
+  setCallAccepted() {
+    this.isCallAccepted = true;
+  }
+
+  setReceivingCall() {
+    this.isReceivingCall = true;
+  }
 
 }

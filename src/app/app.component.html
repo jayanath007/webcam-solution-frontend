@@ -8,24 +8,27 @@
         Live user Name {{ communication.currentUser}}
       </div>
     </div>
+
   </div>
   <div class="item item-4" fxFlex fxFlexOffset.xs="0">
     <div>
       online User list
       <mat-nav-list>
-        <mat-list-item [ngStyle]="{'background-color':  item.userName}" *ngFor="let item of communication.liveUsersList$ | async">
-           <a matLine href="..."> user :- {{item.userName}}</a>
-           <a matLine href="..."> user :- {{item.connectionId}}</a>
-           <button mat-raised-button color="warn" (click)="shareWebcam(item)">
+        <mat-list-item [ngStyle]="{'background-color':  item.userName}"
+          *ngFor="let item of communication.liveUsersList$ | async">
+          <a matLine href="..."> user :- {{item.userName}}</a>
+          <a matLine href="..."> user :- {{item.connectionId}}</a>
+          <button mat-raised-button color="warn" (click)="shareWebcam(item)">
             share webcam
-           </button>
+          </button>
         </mat-list-item>
       </mat-nav-list>
     </div>
 
-    <div [hidden]="!videoConnectionId" >
-      <h5 >{{videoConnectionId}}</h5>
-      <video #videoPlayer width="320" height="240" controls></video>
+
+    <div [hidden]="!videoConnectionId">
+      <h5>{{videoConnectionId}}</h5>
+      <video #remoteUserVideoPlayer width="320" height="240" controls></video>
     </div>
   </div>
 </div>
