@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Favorite Animal</h1>
+<div mat-dialog-content>
+
+
+
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close (click)="rejected()" >rejected</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="accepted()" > Accepted</button>
+</mat-dialog-actions>

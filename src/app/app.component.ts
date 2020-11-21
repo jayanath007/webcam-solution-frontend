@@ -3,6 +3,12 @@ import { PeerData } from '../models/interfaces';
 import { UserCommunicationService } from './../service/user-communication.service';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { IncomingCallDialogPopupComponent } from './incoming-call-dialog-popup/incoming-call-dialog-popup.component';
+import { MatDialog } from '@angular/material';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { map } from 'rxjs/internal/operators/map';
+import { filter } from 'rxjs/internal/operators/filter';
+import { debug } from 'console';
 
 
 @Component({
@@ -21,17 +27,34 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
 
-  constructor(public communication: UserCommunicationService, private util: UtilService) { }
+  constructor(public communication: UserCommunicationService, private util: UtilService, private dialog: MatDialog) {
+
+
+  }
 
   async ngOnInit() {
 
     await this.communication.openCommunicationChanel();
-    this.subscriptions.add(this.communication.incominCall$.subscribe(
+
+    const incominCallMassagePopup$ = this.communication.incominCall$.pipe(switchMap((data) => {
+      return this.dialog.open(IncomingCallDialogPopupComponent).afterClosed()
+        .pipe(filter((isAccepted) => {
+
+          // tslint:disable-next-line: no-debugger
+          debugger;
+          return isAccepted;
+
+        }), map(() => {
+          return data;
+        }));
+    }));
+
+
+    this.subscriptions.add(incominCallMassagePopup$.subscribe(
       async (incomingCall) => {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         this.communication.acceptCall(incomingCall, stream);
       }));
-
 
     this.subscriptions.add(this.communication.onStream$.subscribe((data: PeerData) => {
       this.videoConnectionId = data.id;
