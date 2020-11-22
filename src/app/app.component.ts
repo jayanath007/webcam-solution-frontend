@@ -35,7 +35,8 @@ export class AppComponent implements OnInit, OnDestroy {
     await this.communication.openCommunicationChanel();
 
     const incominCallMassagePopup$ = this.communication.incominCall$.pipe(switchMap((incominCallInfor) => {
-      return this.dialog.open(IncomingCallDialogPopupComponent).afterClosed()
+      const infor = JSON.parse(incominCallInfor);
+      return this.dialog.open(IncomingCallDialogPopupComponent, { data: infor.callFromUserName }).afterClosed()
         .pipe(filter((isAccepted) => isAccepted), map(() => {
           return incominCallInfor;
         }));

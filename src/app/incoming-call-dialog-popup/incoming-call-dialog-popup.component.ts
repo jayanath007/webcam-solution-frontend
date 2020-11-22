@@ -9,7 +9,7 @@ import { IncomingCallInfor } from 'src/models/interfaces';
 })
 export class IncomingCallDialogPopupComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: IncomingCallInfor,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               public dialogRef: MatDialogRef<IncomingCallDialogPopupComponent>
   ) {
 

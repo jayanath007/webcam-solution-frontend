@@ -35,7 +35,7 @@ export class UserCommunicationService {
   public callerSignal;
 
 
-  private incominCall = new Subject<PeerData>();
+  private incominCall = new Subject<any>();
   public incominCall$ = this.incominCall.asObservable();
 
 
@@ -80,7 +80,7 @@ export class UserCommunicationService {
   public acceptCall(incomingCallData, stream) {
 
     const incomingCall = JSON.parse(incomingCallData);
- 
+
     const peer = new SimplePeer({ initiator: false, stream, trickle: false });
 
     peer.on('signal', signal => {
@@ -132,7 +132,7 @@ export class UserCommunicationService {
 
 
   public sendSignalToUser(signal: string, userTocall: string) {
-    this.hubConnection.invoke('SendSignal', signal, userTocall);
+    this.hubConnection.invoke('SendSignal', signal, userTocall, this.currentUser);
     console.log(userTocall);
   }
 
