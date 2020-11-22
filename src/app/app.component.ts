@@ -19,7 +19,7 @@ import { debug } from 'console';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'webcam-solution-frontend';
 
-  videoConnectionId;
+  patnerUserName;
   public subscriptions = new Subscription();
 
 
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }));
 
     this.subscriptions.add(this.communication.onStream$.subscribe((data: PeerData) => {
-      this.videoConnectionId = data.id;
+      this.patnerUserName = data.patnerUserName;
       this.remoteUserVideoPlayer.nativeElement.srcObject = data.data;
       this.remoteUserVideoPlayer.nativeElement.load();
       this.remoteUserVideoPlayer.nativeElement.play();
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async shareWebcam(user) {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    await this.communication.callPeer(stream, user.connectionId, true);
+    await this.communication.callPeer(stream, user.connectionId, user.userName, true);
   }
 
   ngOnDestroy() {

@@ -1,6 +1,7 @@
 export interface PeerData {
   id: string;
   data: any;
+  patnerUserName: string;
 }
 
 export interface UserInfo {
@@ -8,7 +9,7 @@ export interface UserInfo {
   connectionId: string;
 }
 
-export interface UserAction extends  UserInfo {
+export interface UserAction extends UserInfo {
   action: string;
 }
 

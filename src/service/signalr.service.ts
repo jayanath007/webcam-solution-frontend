@@ -18,20 +18,37 @@ export class SignalrService {
 
 
   public async startConnection(): Promise<signalR.HubConnection> {
+    try {
 
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:44366/signalrWebrtc')
-      .build();
-
-      
-    await this.hubConnection.start();
+      this.hubConnection = this.buildHubConnectionBuild();
+      await this.hubConnection.start();
+      return this.hubConnection;
+    } catch (error) {
+      console.error(`Can't join room, error ${error}`);
+    }
     console.log('Connection started');
-    return this.hubConnection;
-
   }
 
-  public async newUserConnection(user: string): Promise<void> {
+
+  public buildHubConnectionBuild(): signalR.HubConnection {
+
+    return this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:44366/signalrWebrtc')
+      .build();
+  }
+
+  public newUserConnection(user: string) {
     this.hubConnection.invoke('NewUser', user);
+  }
+
+  public sendSignalToUser(signal: string, userTocall: string, currentUser: string) {
+    this.hubConnection.invoke('SendSignal', signal, userTocall, currentUser);
+    console.log(userTocall);
+  }
+
+  public sendAcceptCall(callFrom: string, signal: string) {
+    this.hubConnection.invoke('CallAccepted', callFrom, signal);
+    console.log(callFrom);
   }
 
 
