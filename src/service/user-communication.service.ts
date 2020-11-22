@@ -51,6 +51,7 @@ export class UserCommunicationService {
   public async openCommunicationChanel() {
 
     this.hubConnection = await this.signalR.startConnection();
+  
 
     this.hubConnection.on('NewUserArrived', (data) => {
       let user = JSON.parse(data);
