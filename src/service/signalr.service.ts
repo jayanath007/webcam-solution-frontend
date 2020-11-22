@@ -23,6 +23,7 @@ export class SignalrService {
       .withUrl('https://localhost:44366/signalrWebrtc')
       .build();
 
+      
     await this.hubConnection.start();
     console.log('Connection started');
     return this.hubConnection;
